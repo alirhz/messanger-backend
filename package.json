@@ -1,0 +1,24 @@
+{
+  "name": "messanger-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ali Razzaghi",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "mysql2": "^3.9.2",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "twilio": "^5.0.1",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
