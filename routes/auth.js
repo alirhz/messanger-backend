@@ -15,7 +15,7 @@ router.post('/login', (req, res) => {
     const { email, password } = req.body;
 
     // Check if the email exists in the database
-    const sql = 'SELECT password, username ,user_id , email, email FROM users WHERE email = ?';
+    const sql = 'SELECT password, username ,user_id, profile_pic , email, email FROM users WHERE email = ?';
     db.query(sql, [email], (err, results) => {
         if (err) {
             return res.status(500).json({ error: 'Database error' });
@@ -36,7 +36,7 @@ router.post('/login', (req, res) => {
             // Generate a JWT token
             const token = jwt.sign({ user_id: user.user_id, email: user.email }, secretKey);
 
-            res.json({ token, email, username: user.username, user_id: user.user_id });
+            res.json({ token, email, username: user.username, user_id: user.user_id, profile_pic: user.profile_pic });
         });
     });
 });
@@ -47,6 +47,8 @@ router.post('/register', (req, res) => {
   let { username, password, email, fullname } = req.body;
 
   console.log(req.body);
+
+  const color = ['steelblue', 'indigo', 'seagreen', 'maroon']
 
   // Ensure all required fields are provided
   if (!username || !password || !email || !fullname) {
@@ -60,8 +62,8 @@ router.post('/register', (req, res) => {
       return res.status(500).json({ error: 'Hashing error' });
     }
     // Insert user into the database
-    const sql = 'INSERT INTO users (username, password, email, fullname) VALUES (?, ?, ?, ?)';
-    db.query(sql, [username, hashedPassword, email, fullname], (err, result) => {
+    const sql = 'INSERT INTO users (username, password, email, fullname, profile_pic) VALUES (?, ?, ?, ?, ?)';
+    db.query(sql, [username, hashedPassword, email, fullname, color[Math.floor((Math.random() * color.length))]], (err, result) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ error: 'Database error' });
