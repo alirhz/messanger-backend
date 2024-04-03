@@ -7,6 +7,11 @@ function initializeWebSocket(io, db) {
     console.log('A user connected to WebSocket');
 
     // Handle incoming messages from clients
+    socket.on('connected', (data) => {
+      console.log('connected User:', data);
+    });
+
+    // Handle incoming messages from clients
     socket.on('message', (data) => {
       console.log('Received message:', data);
       // Insert the message into the database

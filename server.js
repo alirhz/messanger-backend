@@ -8,7 +8,9 @@ const websocketModule = require('./modules/websocketModule');
 const app = express();
 const port = 3001;
 const server = http.createServer(app);
+app.use(bodyParser.urlencoded({ extended: false }));
 let messagesRoute = require('./routes/messages');
+let authRoute = require('./routes/auth');
 const io = socketIO(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -24,6 +26,7 @@ const db = dbModule.initializeDatabase();
 
 // Route Files
 app.use('/', messagesRoute);
+app.use('/api', authRoute);
 
 
 websocketModule.initializeWebSocket(io, db);
