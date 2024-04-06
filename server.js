@@ -11,6 +11,7 @@ const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: false }));
 let messagesRoute = require('./routes/messages');
 let authRoute = require('./routes/auth');
+let usersRoute = require('./routes/users');
 const io = socketIO(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -27,6 +28,7 @@ const db = dbModule.initializeDatabase();
 // Route Files
 app.use('/', messagesRoute);
 app.use('/api', authRoute);
+app.use('/api', usersRoute);
 
 
 websocketModule.initializeWebSocket(io, db);
