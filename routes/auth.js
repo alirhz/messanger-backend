@@ -10,7 +10,7 @@ const db = dbModule.initializeDatabase();
 // User login endpoint
 const secretKey = 'yourSecretKey';
 
-router.post('/login', (req, res) => {
+router.post('/login' ,(req, res) => {
 
     const { email, password } = req.body;
 
@@ -34,7 +34,7 @@ router.post('/login', (req, res) => {
             }
 
             // Generate a JWT token
-            const token = jwt.sign({ user_id: user.user_id, email: user.email }, secretKey);
+            const token = jwt.sign({ user_id: user.user_id, email: user.email, username: user.username }, secretKey);
 
             res.json({ token, email, username: user.username, user_id: user.user_id, profile_pic: user.profile_pic });
         });
@@ -45,8 +45,6 @@ router.post('/login', (req, res) => {
 
 router.post('/register', (req, res) => {
   let { username, password, email, fullname } = req.body;
-
-  console.log(req.body);
 
   const color = ['steelblue', 'indigo', 'seagreen', 'maroon']
 

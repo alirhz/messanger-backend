@@ -6,7 +6,7 @@ function initializeWebSocket(io, db) {
   io.on('connection', (socket) => {
     console.log('A user connected to WebSocket');
 
-    // Handle incoming messages from clients
+    // Handle incoming user from clients
     socket.on('connected', (data) => {
       console.log('connected User:', data);
     });

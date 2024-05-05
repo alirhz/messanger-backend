@@ -10,6 +10,7 @@ const port = 3001;
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: false }));
 let messagesRoute = require('./routes/messages');
+let membersRoute = require('./routes/members');
 let authRoute = require('./routes/auth');
 let usersRoute = require('./routes/users');
 const io = socketIO(server, {
@@ -27,6 +28,7 @@ const db = dbModule.initializeDatabase();
 
 // Route Files
 app.use('/', messagesRoute);
+app.use('/api', membersRoute);
 app.use('/api', authRoute);
 app.use('/api', usersRoute);
 

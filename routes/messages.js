@@ -1,16 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const dbModule = require('../modules/dbModule');
-
+const verify = require('../middleware/jwtMiddleware');
 const db = dbModule.initializeDatabase();
+const jwt = require('jsonwebtoken');
 
-// Load Edit Form
-router.get('/api/messages', (req, res) => {
-
-    const getQuery = `SELECT messages.id_message, messages.message_text, messages.username, messages.time, messages.user_id, users.profile_pic 
+// Load Messages
+router.get('/api/messages/:conversation_id', verify.verifyToken ,(req, res) => {
+    const conversation_id = req.params.conversation_id;
+    const getQuery = `SELECT DISTINCT messages.id_message, messages.message_text, messages.username, messages.time, messages.username_id, users.profile_pic 
     FROM messages
-    LEFT JOIN users ON messages.user_id = users.user_id
-    `;
+    JOIN users ON (messages.username_id = users.user_id)
+    WHERE messages.conversation_id = ${conversation_id}`;
+
+
+
 
     db.execute(getQuery, (err, result) => {
         if (err) {
