@@ -14,8 +14,6 @@ router.get('/api/messages/:conversation_id', verify.verifyToken ,(req, res) => {
     WHERE messages.conversation_id = ${conversation_id}`;
 
 
-
-
     db.execute(getQuery, (err, result) => {
         if (err) {
             console.error('Error retrieving messages:', err);

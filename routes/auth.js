@@ -34,7 +34,7 @@ router.post('/login' ,(req, res) => {
             }
 
             // Generate a JWT token
-            const token = jwt.sign({ user_id: user.user_id, email: user.email, username: user.username }, secretKey);
+            const token = jwt.sign({ user_id: user.user_id, email: user.email, username: user.username , profile_pic: user.profile_pic }, secretKey);
 
             res.json({ token, email, username: user.username, user_id: user.user_id, profile_pic: user.profile_pic });
         });

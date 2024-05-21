@@ -15,8 +15,10 @@ let authRoute = require('./routes/auth');
 let usersRoute = require('./routes/users');
 const io = socketIO(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: "*", // Allow all origins
+    methods: "*", // Allow all HTTP methods
+    allowedHeaders: "*", // Allow all custom headers
+    credentials: true
   }
 });
 

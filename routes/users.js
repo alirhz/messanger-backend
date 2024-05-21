@@ -78,4 +78,16 @@ router.get('/explore-users', verify.verifyToken , (req, res) => {
     });
 });
 
+// Route to handle the request
+router.get('/retreive-user', verify.verifyToken , (req, res) => {
+    try {
+      // Verify and decode the token
+      const decoded = req.decoded; // Accessing decoded property  
+      // Send the extracted information back in the response
+      res.json({ user_id: decoded.user_id, email: decoded.email, username: decoded.username , profile_pic: decoded.profile_pic });
+    } catch (err) {
+      res.status(500).json({ message: 'Error in server', error: err.message });
+    }
+  });
+
 module.exports = router;
