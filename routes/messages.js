@@ -11,7 +11,9 @@ router.get('/api/messages/:conversation_id', verify.verifyToken ,(req, res) => {
     const getQuery = `SELECT DISTINCT messages.id_message, messages.message_text, messages.username, messages.time, messages.username_id, users.profile_pic 
     FROM messages
     JOIN users ON (messages.username_id = users.user_id)
-    WHERE messages.conversation_id = ${conversation_id}`;
+    WHERE messages.conversation_id = ${conversation_id}
+    ORDER BY messages.time ASC
+    `;
 
 
     db.execute(getQuery, (err, result) => {
