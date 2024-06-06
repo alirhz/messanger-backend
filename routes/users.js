@@ -73,7 +73,7 @@ router.get('/explore-users', verify.verifyToken , (req, res) => {
                     return item
             });
         members = members.filter(ar => !newMember.find(rm => (rm.user_id === ar.user_id) ))
-        res.json(results.concat(members));
+        res.json(removeDuplicatesByUserId(results.concat(members)));
     });
     });
 });
@@ -89,5 +89,17 @@ router.get('/retreive-user', verify.verifyToken , (req, res) => {
       res.status(500).json({ message: 'Error in server', error: err.message });
     }
   });
+
+  const removeDuplicatesByUserId = (arr) => {
+    const seen = new Map();
+    return arr.filter(item => {
+      const value = item.user_id;
+      if (seen.has(value)) {
+        return false;
+      }
+      seen.set(value, true);
+      return true;
+    });
+  };
 
 module.exports = router;
