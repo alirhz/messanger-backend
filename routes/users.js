@@ -37,7 +37,6 @@ router.get('/users', verify.verifyToken , (req, res) => {
 });
 
 router.get('/explore-users', verify.verifyToken , (req, res) => {
-
     // Check if the email exists in the database
     const decoded = req.decoded; // Accessing decoded property
     
@@ -59,11 +58,12 @@ router.get('/explore-users', verify.verifyToken , (req, res) => {
         }
         
     db.query(getUsernames, (err, results) => {
+        
         if (err) {
             return res.status(500).json({ error: err });
         }
 
-        if (results.length === 0) {
+        if (results.length === 0 && members.length === 0) {
             return res.status(401).json({ error: 'Result is empty' });   
         }
         let array = members;
@@ -72,8 +72,8 @@ router.get('/explore-users', verify.verifyToken , (req, res) => {
                 if(array.findIndex(index => index.conversation_id == item.conversation_id) > -1)
                     return item
             });
-        members = members.filter(ar => !newMember.find(rm => (rm.user_id === ar.user_id) ))
-        res.json(removeDuplicatesByUserId(results.concat(members)));
+        members = members.filter(ar => !newMember.find(rm => (rm.user_id === ar.user_id) ));
+        res.json(removeDuplicatesByUserId(results.concat(members)).filter(item => item.user_id != decoded.user_id));
     });
     });
 });

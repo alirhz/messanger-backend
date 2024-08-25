@@ -6,7 +6,7 @@ function initializeDatabase() {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'ali123@',
+    password: 'yourpassword',
     database: 'messanger_db'
   });
 
