@@ -13,16 +13,20 @@ router.get('/users', verify.verifyToken , (req, res) => {
     // This query retrieves all distinct member information associated with conversation IDs related to a
     // specified user ID from the members table.
     // It excludes the user's own ID and fetches the corresponding profile pictures from the users table.
-    const getQuery = `SELECT DISTINCT members.conversation_id, users.username, users.user_id, users.profile_pic
-    FROM members
-    JOIN users ON members.username_id = users.user_id
-    WHERE members.conversation_id IN (
-        SELECT DISTINCT members.conversation_id
-        FROM members
-        WHERE members.username_id = '${decoded.user_id}'
-    )
-    AND members.username_id != '${decoded.user_id}'
-    GROUP BY members.conversation_id, users.username, users.user_id, users.profile_pic`;
+    const getQuery = `
+    SELECT m.conversation_id, m.username_id, m.username, u.profile_pic
+    FROM members m
+    JOIN users u ON m.username_id = u.user_id
+    WHERE m.conversation_id IN (
+      SELECT conversation_id
+      FROM members
+      WHERE username_id = '${decoded.user_id}'
+    );
+  `;  
+  
+  
+  // Pass 'decoded.user_id' as a parameter when executing the query.  
+    
 
     db.execute(getQuery, (err, results) => {
         if (err) {
@@ -32,7 +36,8 @@ router.get('/users', verify.verifyToken , (req, res) => {
         if (results.length === 0) {
             return res.status(401).json({ error: 'Result is empty' });   
         }
-        res.json(results);
+        results = results.filter(item => item.username != decoded.username)
+        res.json(removeDuplicatesByUserId(results,'username_id')); 
     });
 });
 
@@ -73,7 +78,7 @@ router.get('/explore-users', verify.verifyToken , (req, res) => {
                     return item
             });
         members = members.filter(ar => !newMember.find(rm => (rm.user_id === ar.user_id) ));
-        res.json(removeDuplicatesByUserId(results.concat(members)).filter(item => item.user_id != decoded.user_id));
+        res.json(removeDuplicatesByUserId(results.concat(members),'user_id').filter(item => item.user_id != decoded.user_id));
     });
     });
 });
@@ -90,10 +95,10 @@ router.get('/retreive-user', verify.verifyToken , (req, res) => {
     }
   });
 
-  const removeDuplicatesByUserId = (arr) => {
+  const removeDuplicatesByUserId = (arr,userId) => {    
     const seen = new Map();
     return arr.filter(item => {
-      const value = item.user_id;
+      const value = item[userId];
       if (seen.has(value)) {
         return false;
       }
