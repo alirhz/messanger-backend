@@ -18,11 +18,11 @@ router.post('/login' ,(req, res) => {
     const sql = 'SELECT password, username ,user_id, profile_pic , email, email FROM users WHERE email = ?';
     db.query(sql, [email], (err, results) => {
         if (err) {
-            return res.status(500).json({ error: 'Database error' });
+            return res.status(500).json({ error: err.message });
         }
 
         if (results.length === 0) {
-            return res.status(401).json({ error: 'Authentication failed' });
+            return res.status(401).json({ error: "User not found" });
         }
 
         
@@ -30,7 +30,7 @@ router.post('/login' ,(req, res) => {
         // Compare the provided password with the hashed password in the database
         bcrypt.compare(password, user.password, (bcryptErr, bcryptResult) => {
             if (bcryptErr || !bcryptResult) {
-                return res.status(401).json({ error: 'Authentication failed' });
+                return res.status(401).json({ error: err.message });
             }
 
             // Generate a JWT token
@@ -57,14 +57,14 @@ router.post('/register', (req, res) => {
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
       console.error(err);
-      return res.status(500).json({ error: 'Hashing error' });
+      return res.status(500).json({ error: err.message });
     }
     // Insert user into the database
     const sql = 'INSERT INTO users (username, password, email, fullname, profile_pic) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [username, hashedPassword, email, fullname, color[Math.floor((Math.random() * color.length))]], (err, result) => {
       if (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Database error' });
+        return res.status(500).json({ error: err.message });
       }
       res.json({ username, email, fullname });
     });
